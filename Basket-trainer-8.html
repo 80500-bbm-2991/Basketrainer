@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Basket Trainer Pro</title>
+<style>
+:root{--bg:#090d16;--card:#1e293b;--card2:#0f172a;--bd:#334155;--tx:#f1f5f9;--mut:#94a3b8;--blue:#2563eb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;touch-action:manipulation}
+.hidden{display:none!important}
+#setup{max-width:440px;margin:16px auto;padding:20px;background:var(--card);border:1px solid var(--bd);border-radius:18px;display:flex;flex-direction:column;gap:14px}
+h1{margin:0;text-align:center;font-size:22px;color:#60a5fa}
+.sub{text-align:center;color:var(--mut);font-size:13px;margin:0}
+.badge{display:inline-block;margin-top:6px;font-size:12px;font-weight:700;color:#fbbf24;border:1px solid #fbbf2455;padding:3px 10px;border-radius:99px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.mode{padding:10px 6px;border-radius:12px;border:1px solid var(--bd);background:#0f172a99;color:#cbd5e1;font-size:12px;cursor:pointer}
+.mode.on{background:var(--blue);border-color:#3b82f6;color:#fff;font-weight:700}
+label.opt{display:flex;align-items:center;gap:6px;padding:8px;border:1px solid var(--bd);border-radius:10px;background:#0f172a99;font-size:12px;font-weight:700;cursor:pointer}
+.sec{border-top:1px solid var(--bd);padding-top:10px;display:flex;flex-direction:column;gap:6px}
+.t{font-size:12px;color:#cbd5e1;font-weight:600}
+select,input[type=number]{width:100%;background:var(--card2);color:#fff;border:1px solid var(--bd);border-radius:10px;padding:8px;font-size:13px}
+input[type=range]{width:100%}
+#desc{font-size:11px;color:var(--mut);font-style:italic;margin:6px 0 0}
+.btn{border:0;border-radius:12px;padding:13px;font-size:16px;font-weight:700;color:#fff;background:var(--blue);cursor:pointer;width:100%}
+.btn.sm{padding:9px;font-size:13px;background:#334155;color:#cbd5e1;font-weight:500}
+#ex{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
+.top{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));display:flex;gap:8px;align-items:center}
+.pill{background:#000a;color:#fff;border:1px solid #fff3;border-radius:10px;padding:7px 12px;font-size:13px;font-weight:700}
+#label{font-weight:900;text-align:center;letter-spacing:.05em;text-shadow:0 6px 20px #0008}
+#arrow{width:min(70vw,360px);height:min(70vw,360px);filter:drop-shadow(0 6px 16px #0008);transform:rotate(var(--r,0deg))}
+.pop{animation:pop .15s ease-out}
+@keyframes pop{0%{transform:rotate(var(--r,0deg)) scale(.8);opacity:.5}50%{transform:rotate(var(--r,0deg)) scale(1.1);opacity:1}100%{transform:rotate(var(--r,0deg)) scale(1);opacity:1}}
+#pauseOv{position:absolute;inset:0;z-index:40;background:#000d;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;cursor:pointer}
+#pauseOv h2{margin:0;color:#fbbf24;font-size:24px}
+.card{background:var(--card);border:1px solid #475569;border-radius:18px;padding:20px;max-width:360px;width:100%;text-align:center;display:flex;flex-direction:column;gap:12px;z-index:10}
+.card h3{margin:0;font-size:16px}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pad button{padding:14px;border-radius:12px;border:0;background:#334155;color:#fff;font-size:20px;cursor:pointer}
+#seqDisp{background:var(--card2);border:1px solid var(--bd);border-radius:12px;padding:10px;min-height:44px;font-size:13px;font-weight:700;color:#fbbf24;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center}
+#seqDisp span{padding:3px 8px;background:var(--card);border:1px solid #475569;border-radius:8px}
+.ok{color:#34d399;font-weight:700;font-size:14px}.ko{color:#fb7185;font-weight:700;font-size:13px;line-height:1.5}
+#ex{padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+@media (orientation:landscape) and (max-height:620px){
+#setup{max-width:880px;display:grid;grid-template-columns:1fr 1fr;align-items:start;column-gap:18px;margin-left:auto;margin-right:auto}
+#setup>:first-child,#start{grid-column:1/-1}
+#setup{margin-left:max(auto,env(safe-area-inset-left,0px))}
+#ex{padding-top:8px;padding-bottom:8px}
+#arrow{width:min(58vh,300px);height:min(58vh,300px)}
+.card{max-height:calc(100vh - 20px);overflow:auto;padding:12px;gap:8px;max-width:420px}
+.pad button{padding:8px;font-size:18px}
+#seqDisp{min-height:36px;padding:6px}
+.top{top:calc(8px + env(safe-area-inset-top,0px))}
+}
+@media (max-width:420px){.pill{padding:6px 8px;font-size:12px}}
+.ovl{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.ovl input{width:100%;font-size:20px;text-align:center;background:var(--card2);color:#fff;border:1px solid var(--bd);border-radius:10px;padding:10px}
+.row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 8px;padding:8px 0;border-bottom:1px solid var(--bd)}.row small{width:100%;color:var(--mut)}
+</style>
+</head>
+<body>
+<div id="setup">
+  <div style="text-align:center">
+    <h1>🏀 Basket Trainer Pro</h1>
+    <p class="sub">Entraînement cognitif &amp; mémoire</p>
+    <div class="badge">🏆 Meilleur Backtrack : <span id="hs">0</span></div>
+  </div>
+  <div>
+    <div class="t" style="margin-bottom:6px">Mode d'exercice :</div>
+    <div class="grid" id="modes">
+      <button class="mode" data-m="stroop">🎭 1. Stroop</button>
+      <button class="mode" data-m="generator">🎨 2. Plots</button>
+      <button class="mode" data-m="dualtask">🧠 3. Dual Task</button>
+      <button class="mode" data-m="arrows">🧭 4. Flèches</button>
+      <button class="mode" data-m="math">🧮 5. Math Memory</button>
+      <button class="mode" data-m="backtrack">↩️ 6. Backtrack</button>
+      <button class="mode" data-m="duel">🏀 7. 1c1 + Tir</button>
+      <button class="mode" data-m="simon">🎯 8. Simon</button>
+      <button class="mode" data-m="approach" style="grid-column:1/-1">📷 9. Approche caméra</button>
+    </div>
+    <p id="desc"></p>
+  </div>
+
+  <div class="sec" data-for="stroop generator dualtask math simon">
+    <div class="t">Couleurs actives :</div>
+    <div class="grid3" id="colorBox"></div>
+  </div>
+  <div class="sec" data-for="dualtask">
+    <div class="t">Mouvements Dual Task :</div>
+    <div class="grid3" id="moveBox"></div>
+  </div>
+  <div class="sec" data-for="arrows">
+    <div class="t" style="color:#34d399">Directions flèches :</div>
+    <div class="grid">
+      <label class="opt"><input type="checkbox" id="useCard" checked>Cardinales (4)</label>
+      <label class="opt"><input type="checkbox" id="useDiag" checked>Diagonales (4)</label>
+    </div>
+    <label class="opt" style="justify-content:space-between;color:#fb7185">Contre-Ordre (Rouge = inversé)<input type="checkbox" id="counter" checked></label>
+  </div>
+  <div class="sec" data-for="math">
+    <div class="t" style="color:#fbbf24">Règle mathématique :</div>
+    <select id="mathOp">
+      <option value="sum">Additionner tous les chiffres</option>
+      <option value="alt">Alterner + - + -</option>
+      <option value="lmf">Dernier moins le premier</option>
+    </select>
+  </div>
+  <div class="sec" data-for="approach">
+    <div class="t" style="color:#fb923c">📷 Caméra (version localhost uniquement)</div>
+    <select id="apFace"><option value="user">Caméra avant (face au joueur)</option><option value="environment">Caméra arrière</option></select>
+    <div class="t">Distance de déclenchement :</div>
+    <select id="apDist"><option value="0.45">Proche (joueur ≈ 45 % de l’image)</option><option value="0.6" selected>Très proche (≈ 60 %)</option><option value="0.8">Au contact (≈ 80 %)</option></select>
+    <div class="t">Contre-ordre (flèche rouge = côté opposé) :</div>
+    <select id="apCtr"><option value="0" selected>Aucun</option><option value="0.2">Rare (20 %)</option><option value="0.35">Normal (35 %)</option><option value="0.5">Fréquent (50 %)</option></select>
+    <div class="t">Réactivité du déclenchement :</div>
+    <select id="apFast"><option value="0" selected>Normale</option><option value="1">Rapide (anticipe l’approche)</option></select>
+  </div>
+  <div class="sec" data-for="simon">
+    <div class="t" style="color:#fb923c">Longueur de départ :</div>
+    <select id="simonLen"><option value="2">2 couleurs</option><option value="3" selected>3 couleurs</option><option value="4">4 couleurs</option><option value="5">5 couleurs</option></select>
+    <div class="t" style="margin-top:6px">Temps pour toucher les cônes (par couleur) :</div>
+    <select id="simonSec"><option value="2">2 s</option><option value="3" selected>3 s</option><option value="4">4 s</option><option value="5">5 s</option></select>
+  </div>
+  <div class="sec" data-for="duel">
+    <label class="opt"><input type="checkbox" id="camOn">📷 Détection caméra (version localhost)</label>
+    <select id="camFace"><option value="user">Caméra avant (face au joueur)</option><option value="environment">Caméra arrière</option></select>
+    <div class="t" style="color:#fb923c">Fréquence des tirs :</div>
+    <select id="shotPct">
+      <option value="0.15">Peu de tirs (15 %)</option>
+      <option value="0.25" selected>Normal (25 %)</option>
+      <option value="0.4">Beaucoup de tirs (40 %)</option>
+    </select>
+  </div>
+  <div class="sec" data-for="backtrack">
+    <div class="t" style="color:#c084fc">Nombre de flèches :</div>
+    <select id="btLen">
+      <option value="3">3 flèches (Facile)</option>
+      <option value="4" selected>4 flèches (Standard)</option>
+      <option value="5">5 flèches (Expert)</option>
+      <option value="6">6 flèches (Expert+)</option>
+    </select>
+  </div>
+  <div>
+    <div class="t">Intervalle : <b id="ivVal" style="color:#60a5fa">2.0</b> s</div>
+    <input type="range" id="iv" min="0.5" max="10" step="0.5" value="2">
+  </div>
+  <div data-hide="backtrack simon">
+    <div class="t">Durée : <b id="duVal" style="color:#818cf8">20 secondes</b></div>
+    <input type="range" id="du" min="5" max="60" step="5" value="20">
+  </div>
+  <div class="grid hidden"><button class="btn sm" id="openPl" type="button" style="background:#7c3aed;color:#fff">👦 Circuit joueur</button><button class="btn sm" id="openCoach" type="button">🔒 Espace coach</button></div>
+  <label class="opt"><input type="checkbox" id="snd" checked>🔊 Bip sonore</label>
+  <label class="opt"><input type="checkbox" id="tutoOn" checked>❓ Didacticiel avant la partie</label>
+  <button class="btn" id="start">▶ Lancer l'entraînement</button>
+</div>
+
+<div id="tuto" class="ovl hidden"><div class="card" style="max-width:420px;text-align:left">
+  <h3 id="tTitle" style="text-align:center"></h3>
+  <div id="tDemo" style="font-weight:900;font-size:34px;min-height:56px;display:flex;align-items:center;justify-content:center;gap:12px"></div>
+  <ol id="tSteps" style="margin:0;padding-left:20px;font-size:14px;line-height:1.6"></ol>
+  <p id="tTip" style="margin:0;font-size:12px;color:var(--mut)"></p>
+  <button class="btn" id="tGo" type="button">▶ Compris, lancer</button>
+  <button class="btn sm" id="tBack" type="button">Retour aux réglages</button>
+</div></div>
+<video id="camV" class="hidden" playsinline muted style="position:fixed;right:10px;bottom:10px;width:160px;height:120px;border-radius:8px;object-fit:cover;z-index:55;opacity:.85"></video>
+<div id="camZ" class="hidden" style="position:fixed;right:10px;bottom:10px;width:160px;height:120px;z-index:56;display:flex;pointer-events:none;border-radius:8px;overflow:hidden"><i style="flex:1"></i><i style="flex:1;border-left:2px solid #fff9;border-right:2px solid #fff9"></i><i style="flex:1"></i></div>
+<div id="camRes" class="hidden" style="position:fixed;left:10px;bottom:10px;z-index:55;background:#000a;color:#fff;border-radius:8px;padding:6px 10px;font-size:13px;font-weight:700"></div>
+<div id="camSum" class="ovl hidden"><div class="card"><h3>📷 Résultats caméra</h3><p id="camTxt" style="margin:0;font-size:15px;line-height:1.7"></p><button class="btn" id="camOk" type="button">OK</button></div></div>
+<div id="pl" class="ovl hidden"><div class="card">
+  <h3 style="color:#c084fc">👦 Circuit joueur</h3>
+  <p id="plMsg" style="margin:0;font-size:14px"></p>
+  <input id="plName" type="text" maxlength="20" placeholder="Ton prénom" autocomplete="off">
+  <button class="btn" id="plGo" type="button">▶ Commencer le circuit</button>
+  <button class="btn sm" id="plBack" type="button">Retour</button>
+</div></div>
+<div id="coach" class="ovl hidden"><div class="card" style="max-width:480px;max-height:92vh;overflow:auto;text-align:left">
+  <div id="pinBox" style="display:flex;flex-direction:column;gap:10px;text-align:center">
+    <h3>🔒 Espace coach</h3><p id="pinMsg" style="margin:0;font-size:13px"></p>
+    <input id="pin" type="password" inputmode="numeric" maxlength="4">
+    <button class="btn" id="pinOk" type="button">Valider</button>
+  </div>
+  <div id="coachList" class="hidden"><h3>Notes des joueurs</h3><div id="coachRows"></div>
+    <button class="btn sm" id="coachWipe" type="button" style="margin-top:10px">Tout effacer</button>
+  </div>
+  <button class="btn sm" id="coachClose" type="button">Fermer</button>
+</div></div>
+<div id="ex" class="hidden">
+  <div class="top" style="left:14px"><div class="pill" id="badgeT">⏱ <span id="cd">--</span></div></div>
+  <div class="top" style="right:14px;gap:8px">
+    <button class="pill" id="pauseBtn" type="button">⏸ Pause</button>
+    <button class="pill" id="restartBtn" type="button">🔄 Refaire</button>
+    <button class="pill" id="stopBtn" type="button">⏹ Quitter</button>
+  </div>
+
+  <div id="pauseOv" class="hidden">
+    <div style="font-size:54px">⏸</div>
+    <h2>EN PAUSE</h2>
+    <p style="font-size:13px;color:#cbd5e1;margin:0">Touchez l'écran pour reprendre</p>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%">
+    <div id="label">---</div>
+    <svg id="arrow" class="hidden" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L3 13h6v9h6v-9h6L12 2z"/></svg>
+
+    <div id="btCard" class="card hidden">
+      <h3 style="color:#c084fc">↩️ Entrez la suite à l'envers</h3>
+      <div id="seqDisp"></div>
+      <div class="pad">
+        <span></span><button data-d="HAUT">↑</button><span></span>
+        <button data-d="GAUCHE">←</button><button data-clear="1" style="color:#fb7185">⟲</button><button data-d="DROITE">→</button>
+        <span></span><button data-d="BAS">↓</button><span></span>
+      </div>
+      <div id="btFb" class="hidden"></div>
+      <button class="btn sm hidden" id="btRestart" type="button">Terminer</button>
+    </div>
+
+    <div id="simonGo" class="card hidden">
+      <h3 style="color:#fb923c">🏃 Touche les cônes dans l'ordre !</h3>
+      <div id="goCd" style="font-size:64px;font-weight:900"></div>
+      <button class="btn" id="goDone" type="button">✅ J'ai fini, saisir la séquence</button>
+    </div>
+    <div id="simonCard" class="card hidden">
+      <h3 style="color:#fb923c">🎯 Saisis la séquence</h3>
+      <p id="simonInfo" style="margin:0;font-size:13px;color:var(--mut)"></p>
+      <div id="simonSeq" class="hidden" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"></div>
+      <div id="simonPad" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"></div>
+      <div id="simonFb" class="hidden"></div>
+      <button class="btn hidden" id="simonShow" type="button">👁 Voir la séquence</button>
+      <div id="simonVerdict" class="hidden" style="display:flex;gap:8px"><button class="btn" id="simonOk" type="button" style="background:#059669">✅ Réussi</button><button class="btn" id="simonKo" type="button" style="background:#be123c">❌ Raté</button></div>
+    </div>
+
+    <div id="mathCard" class="card hidden">
+      <h3 style="color:#fbbf24">🧠 Temps écoulé ! De tête :</h3>
+      <div style="display:flex;gap:8px"><button type="button" id="mathSign" class="btn sm" style="width:64px;font-size:22px">±</button><input type="text" inputmode="numeric" id="mathAns" placeholder="Votre réponse" style="flex:1;min-width:0;font-size:24px;text-align:center;font-weight:700;background:var(--card2);color:#fff;border:1px solid var(--bd);border-radius:10px;padding:8px"></div>
+      <button class="btn" id="mathOk" type="button" style="background:#d97706;font-size:14px">Valider et voir la correction</button>
+      <div id="mathFb" class="hidden"><div id="mathMsg"></div><p id="mathSeq" style="font-size:12px;color:var(--mut)"></p></div>
+      <button class="btn sm hidden" id="mathRestart" type="button">Terminer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const COLORS=[{n:'BLEU',c:'#60a5fa',h:'#2563eb'},{n:'BLANC',c:'#ffffff',h:'#ffffff',dark:1},{n:'VERT',c:'#34d399',h:'#059669'},{n:'JAUNE',c:'#fcd34d',h:'#f59e0b',dark:1},{n:'ROUGE',c:'#f43f5e',h:'#e11d48'}];
+const MOVES=['CROSS','BTB','BTL','IN & OUT','CROSS JAB'];
+const ROT={'HAUT':0,'HAUT-DROIT':45,'DROITE':90,'BAS-DROIT':135,'BAS':180,'BAS-GAUCHE':225,'GAUCHE':270,'HAUT-GAUCHE':315};
+const CARD=[['HAUT','BAS'],['BAS','HAUT'],['GAUCHE','DROITE'],['DROITE','GAUCHE']];
+const DIAG=[['HAUT-DROIT','BAS-GAUCHE'],['HAUT-GAUCHE','BAS-DROIT'],['BAS-DROIT','HAUT-GAUCHE'],['BAS-GAUCHE','HAUT-DROIT']];
+const DESC={stroop:"Annoncez le mot écrit, sans vous laisser tromper par sa couleur.",generator:"Couleurs en plein écran (idéal pour les plots).",dualtask:"Couleur de fond aléatoire + mouvement technique.",arrows:"Vert = direction normale / Rouge = direction inversée.",math:"Mémorisez les chiffres et calculez le résultat à la fin !",backtrack:"Mémorisez la séquence de flèches et restituez-la à l'envers !",duel:"Flèche gauche ou droite : partez de ce côté. Écran TIR : pas de déplacement, prenez le tir !",simon:"Mémorisez la suite de couleurs, puis touchez les cônes dans l'ordre et saisissez la séquence sur l'écran !",approach:"Dribblez vers la caméra : quand vous êtes proche, une flèche gauche ou droite apparaît !"};
+const $=id=>document.getElementById(id);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const buzz=()=>{try{navigator.vibrate&&navigator.vibrate(30)}catch(e){}};
+let AC=null,C=null;
+function beep(f,d){if(!$('snd').checked)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime;o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.3,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d);}catch(e){}}
+function cue(){showNext();beep(S.tone||880,S.tone?.2:.12);S.tone=0;}
+function nextColor(){const p=S.colors.filter(c=>c.n!==S.lastInk);const c=pick(p.length?p:S.colors);S.lastInk=c.n;return c;}
+
+let mode='stroop',intervalMs=2000,duration=20,hs=0;
+try{hs=parseInt(localStorage.getItem('bt_hs'))||0}catch(e){}
+$('hs').textContent=hs;
+
+/* Un SEUL timer central (tick de 100 ms). Pause = on ignore les ticks, aucun état perdu. */
+const S={timer:null,phase:'idle',paused:false,since:0,left:0,ready:0,lastShown:false,colors:[],moves:[],digits:[],bt:[],input:[],btN:4,expected:0};
+const TICK=100;
+
+// Construction des options
+$('colorBox').innerHTML=COLORS.map(c=>`<label class="opt"><input type="checkbox" name="col" value="${c.n}" checked><span style="color:${c.c}">${c.n[0]+c.n.slice(1).toLowerCase()}</span></label>`).join('');
+$('moveBox').innerHTML=MOVES.map(m=>`<label class="opt"><input type="checkbox" name="mv" value="${m}" checked><span style="color:#d8b4fe">${m}</span></label>`).join('');
+
+function setMode(m){
+  mode=m;
+  document.querySelectorAll('.mode').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
+  document.querySelectorAll('[data-for]').forEach(e=>e.classList.toggle('hidden',!e.dataset.for.split(' ').includes(m)));
+  document.querySelectorAll('[data-hide]').forEach(e=>e.classList.toggle('hidden',e.dataset.hide.split(' ').includes(m)));
+  $('desc').textContent=DESC[m];
+}
+$('modes').addEventListener('click',e=>{const b=e.target.closest('.mode');if(b){setMode(b.dataset.m);try{localStorage.setItem('bt_mode',b.dataset.m)}catch(x){}}});
+$('iv').addEventListener('input',e=>{intervalMs=parseFloat(e.target.value)*1000;$('ivVal').textContent=parseFloat(e.target.value).toFixed(1)});
+$('du').addEventListener('input',e=>{duration=parseInt(e.target.value);$('duVal').textContent=duration+' secondes'});
+setMode('stroop');
+
+function resetView(){
+  ['arrow','btCard','mathCard','simonCard','simonGo','pauseOv'].forEach(i=>$(i).classList.add('hidden'));
+  $('label').classList.remove('hidden');
+  $('ex').style.backgroundColor='';
+}
+function setLabel(txt,color,size){
+  const l=$('label');l.textContent=txt;l.style.color=color;l.style.fontSize=size;
+}
+
+function tick(){
+  if(S.paused)return;
+  if(S.phase==='ready'){
+    S.ready-=TICK;
+    const sec=Math.max(1,Math.ceil(S.ready/1000));if(sec!==S.lastSec){S.lastSec=sec;beep(660,.1);}
+    setLabel(sec,'#fbbf24','110px');
+    if(S.ready<=0){S.phase='showing';S.since=0;cue();}
+    return;
+  }
+  if(S.phase==='go'){S.goLeft-=TICK;$('goCd').textContent=Math.max(0,Math.ceil(S.goLeft/1000))+'s';if(S.goLeft<=0)promptSimon();return;}
+  if(S.phase!=='showing')return;
+  if(mode!=='backtrack'&&mode!=='simon'){
+    S.left-=TICK;
+    $('cd').textContent=Math.max(0,Math.ceil(S.left/1000))+'s';
+    if(S.left<=0){finish();return;}
+  }
+  if(mode==='approach'){apTick();return;}
+  S.since+=TICK;
+  if(S.since>=intervalMs){
+    S.since=0;
+    if(S.lastShown)(mode==='simon'?simonGo():promptBacktrack());else cue();
+  }
+}
+
+function showNext(){
+  buzz();
+  const lab=$('label'),ar=$('arrow');
+  if(mode==='approach'){apWait();return;}
+  if(mode==='simon'){
+    const c=nextColor();S.sq.push(c.n);
+    if(S.sq.length>=S.sqLen)S.lastShown=true;
+    ar.classList.add('hidden');lab.classList.remove('hidden');
+    $('ex').style.backgroundColor=c.h;
+    setLabel(c.n,c.dark?'#0f172a':'#fff','min(18vw,96px)');
+    S.tone=300+COLORS.findIndex(x=>x.n===c.n)*130;
+    return;
+  }
+  if(mode==='duel'){
+    const shot=Math.random()<parseFloat($('shotPct').value)&&S.lastDuel!=='TIR';
+    const d=shot?'TIR':pick(['GAUCHE','DROITE']);
+    S.lastDuel=d;camSignal(d);
+    if(shot){
+      ar.classList.add('hidden');lab.classList.remove('hidden');
+      $('ex').style.backgroundColor='#ea580c';
+      setLabel('🏀 TIR !','#fff','min(20vw,110px)');
+      S.tone=1200;
+    }else{
+      lab.classList.add('hidden');ar.classList.remove('hidden');
+      $('ex').style.backgroundColor='';
+      ar.classList.remove('pop');void ar.getBoundingClientRect();ar.classList.add('pop');
+      ar.style.setProperty('--r',ROT[d]+'deg');ar.style.color='#10b981';
+    }
+    return;
+  }
+  if(mode==='arrows'||mode==='backtrack'){
+    lab.classList.add('hidden');ar.classList.remove('hidden');
+    $('ex').style.backgroundColor='';
+    let name,color='#10b981';
+    if(mode==='arrows'){
+      let pool=[];if($('useCard').checked)pool=pool.concat(CARD);if($('useDiag').checked)pool=pool.concat(DIAG);
+      if(!pool.length){alert('Sélectionnez au moins un type de flèche !');stopExercise();return;}
+      const [n,opp]=pick(pool);
+      const inv=$('counter').checked&&Math.random()<0.35;
+      name=inv?opp:n;S.tone=inv?440:0;if(inv)color='#f43f5e';
+    }else{
+      name=pick(['HAUT','BAS','GAUCHE','DROITE']);
+      S.bt.push(name);
+      if(S.bt.length>=S.btN)S.lastShown=true;
+    }
+    ar.classList.remove('pop');void ar.getBoundingClientRect();ar.classList.add('pop');
+    ar.style.setProperty('--r',ROT[name]+'deg');ar.style.color=color;
+    return;
+  }
+  ar.classList.add('hidden');lab.classList.remove('hidden');
+  if(mode==='math'){
+    const d=Math.floor(Math.random()*9)+1;S.digits.push(d);
+    $('ex').style.backgroundColor='';
+    setLabel(d,nextColor().c,'140px');
+  }else if(mode==='stroop'){
+    $('ex').style.backgroundColor='';
+    setLabel(pick(S.colors).n,nextColor().c,'min(18vw,96px)');
+  }else if(mode==='generator'){
+    const c=nextColor();$('ex').style.backgroundColor=c.h;
+    setLabel(c.n,c.dark?'#0f172a':'#fff','min(18vw,96px)');
+  }else{
+    const c=nextColor();$('ex').style.backgroundColor=c.h;
+    setLabel(pick(S.moves),c.dark?'#0f172a':'#fff','min(14vw,80px)');
+  }
+}
+
+function finish(){beep(1000,.4);if((mode==='duel'||mode==='approach')&&CAM.on){camEval();const n=CAM.n,ok=CAM.ok,avg=CAM.dn?CAM.sum/CAM.dn:0;stopExercise();$('camTxt').innerHTML='Signaux analysés : '+n+'<br>Bonnes réponses : '+ok+' / '+n+(CAM.dn?'<br>Temps de réaction moyen : '+avg.toFixed(2).replace('.',',')+' s':'')+(CAM.cn?'<br>Contre-ordres réussis : '+CAM.cok+' / '+CAM.cn:'')+(mode==='approach'&&CAM.ok?'<br>Sorties confirmées : '+(CAM.xo||0)+' / '+CAM.ok:'');show('camSum',1);return;}
+  if(mode==='math')promptMath();else stopExercise();
+}
+function promptMath(){
+  S.phase='input';
+  resetView();$('label').classList.add('hidden');$('mathCard').classList.remove('hidden');
+  S.expected=calcMath();$('mathAns').focus();
+}
+function promptBacktrack(){
+  S.phase='input';
+  resetView();$('label').classList.add('hidden');$('btCard').classList.remove('hidden');
+}
+function calcMath(){
+  const h=S.digits;if(!h.length)return 0;
+  const op=$('mathOp').value;
+  if(op==='sum')return h.reduce((a,b)=>a+b,0);
+  if(op==='alt')return h.reduce((a,b,i)=>i%2?a-b:a+b,0);
+  return h[h.length-1]-h[0];
+}
+
+function togglePause(){
+  if(S.phase!=='showing'&&S.phase!=='ready'&&S.phase!=='go')return;
+  S.paused=!S.paused;
+  $('pauseOv').classList.toggle('hidden',!S.paused);
+}
+
+function startExercise(){
+  if(['stroop','generator','dualtask','math','simon'].includes(mode)){
+    const sel=[...document.querySelectorAll('input[name=col]:checked')].map(c=>c.value);
+    if(!sel.length){alert('Sélectionnez au moins une couleur !');return;}
+    S.colors=COLORS.filter(c=>sel.includes(c.n));
+  }
+  if(mode==='dualtask'){
+    S.moves=[...document.querySelectorAll('input[name=mv]:checked')].map(c=>c.value);
+    if(!S.moves.length){alert('Sélectionnez au moins un mouvement !');return;}
+  }
+  if(mode==='arrows'&&!$('useCard').checked&&!$('useDiag').checked){alert('Sélectionnez au moins un type de flèche !');return;}
+  try{const el=document.documentElement;(el.requestFullscreen||el.webkitRequestFullscreen).call(el)}catch(e){}
+
+  clearInterval(S.timer);
+  beep(1,.01);Object.assign(S,{lastSec:0,tone:0,lastDuel:null,sq:[],sqLen:parseInt($('simonLen').value),round:0,simonBest:0,simonSec:parseInt($('simonSec').value),apThr:parseFloat($('apDist').value),apCtr:parseFloat($('apCtr').value),apFast:$('apFast').value==='1',ap:null,paused:false,since:0,left:duration*1000,ready:3000,lastShown:false,lastInk:null,digits:[],bt:[],input:[],phase:'ready',btN:parseInt($('btLen').value)});
+  $('btFb').classList.add('hidden');$('btRestart').classList.add('hidden');
+  $('mathFb').classList.add('hidden');$('mathOk').classList.remove('hidden');$('mathRestart').classList.add('hidden');$('mathAns').value='';
+  updSeq();
+  $('badgeT').classList.toggle('hidden',mode==='backtrack'||mode==='simon');
+  $('cd').textContent=duration+'s';
+  $('setup').classList.add('hidden');$('ex').classList.remove('hidden');
+  resetView();
+  setLabel(3,'#fbbf24','110px');
+  S.timer=setInterval(tick,TICK);camStop();camStart();
+}
+
+function stopExercise(){camStop();if(C){intervalMs=C.pi;duration=C.pd;setMode(C.prev);}C=null;
+  clearInterval(S.timer);S.timer=null;
+  S.phase='idle';S.paused=false;
+  resetView();
+  $('ex').classList.add('hidden');$('setup').classList.remove('hidden');
+  try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}
+}
+
+function updSeq(){
+  $('seqDisp').innerHTML=S.input.length?S.input.map(d=>`<span>${d}</span>`).join('➔'):'<span style="color:#64748b;border:0;background:none">Aucune sélection</span>';
+}
+$('btCard').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b||!$('btFb').classList.contains('hidden'))return;
+  if(b.dataset.clear){S.input=[];updSeq();return;}
+  if(b.dataset.d&&S.input.length<S.btN){
+    S.input.push(b.dataset.d);updSeq();
+    if(S.input.length===S.btN)validateBt();
+  }
+});
+function validateBt(){
+  const exp=[...S.bt].reverse();
+  const okk=S.input.every((v,i)=>v===exp[i]);
+  const fb=$('btFb');fb.classList.remove('hidden');
+  if(okk){
+    fb.textContent='🎉 Parfait ! Séquence exacte.';fb.className='ok';
+    const sc=S.btN*100;
+    if(sc>hs){hs=sc;try{localStorage.setItem('bt_hs',hs)}catch(e){}$('hs').textContent=hs;}
+  }else{
+    fb.innerHTML=`❌ Erreur !<br>Attendu : ${exp.join(' ➔ ')}<br>Votre choix : ${S.input.join(' ➔ ')}`;fb.className='ko';
+  }
+  if(C){setTimeout(()=>circuitNext(okk),1800);}else $('btRestart').classList.remove('hidden');
+}
+$('mathOk').addEventListener('click',()=>{
+  const raw=$('mathAns').value.trim();
+  if(raw===''||isNaN(parseInt(raw,10))){$('mathAns').focus();return;}
+  const ok=parseInt(raw,10)===S.expected;
+  $('mathFb').classList.remove('hidden');
+  $('mathMsg').textContent=ok?"Bravo ! C'est la bonne réponse 🎉":`Faux ! La bonne réponse était : ${S.expected}`;
+  $('mathMsg').className=ok?'ok':'ko';
+  $('mathSeq').textContent='Séquence : '+S.digits.join(' ➔ ');
+  $('mathOk').classList.add('hidden');if(C){setTimeout(()=>circuitNext(ok),1800);}else $('mathRestart').classList.remove('hidden');
+});
+
+$('mathSign').addEventListener('click',()=>{const i=$('mathAns');i.value=i.value.startsWith('-')?i.value.slice(1):'-'+i.value;i.focus();});
+$('mathAns').addEventListener('input',e=>{e.target.value=e.target.value.replace(/[^0-9-]/g,'').replace(/(?!^)-/g,'');});
+/* Circuit joueur + espace coach (données gardées dans ce navigateur) */
+let PL={},PIN='',wipe=0;
+try{PL=JSON.parse(localStorage.getItem('bt_players'))||{};PIN=localStorage.getItem('bt_pin')||'';}catch(e){}
+const save=()=>{try{localStorage.setItem('bt_players',JSON.stringify(PL))}catch(e){}};
+const show=(id,v)=>$(id).classList.toggle('hidden',!v);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function openPl(msg){$('plMsg').textContent=msg||'Entre ton prénom pour commencer.';$('plName').value='';show('pl',1);}
+function circuitRun(){
+  const t=C.trials[C.i];
+  if(t.t==='bt'){mode='backtrack';$('btLen').value=String(C.span);intervalMs=C.iv;}
+  else{mode='math';duration=10;intervalMs=2000;$('mathOp').value=t.op;}
+  startExercise();
+}
+function circuitNext(ok){
+  if(!C)return;
+  if(C.trials[C.i].t==='bt'){if(ok)C.best=Math.max(C.best,C.span);C.btOk+=ok?1:0;C.span=ok?Math.min(6,C.span+1):Math.max(3,C.span-1);}
+  else C.mathOk+=ok?1:0;
+  C.i++;
+  if(C.i>=C.trials.length)circuitEnd();else circuitRun();
+}
+function circuitEnd(){
+  const b=C.best?C.best-2:0;
+  const note=Math.max(1,Math.min(10,Math.round(b/4*5+C.btOk/4*2.5+C.mathOk/2*2.5)));
+  const p=PL[C.key]||(PL[C.key]={name:C.name,h:[]});
+  p.h.push({d:new Date().toISOString().slice(0,10),note,best:C.best,bt:C.btOk,m:C.mathOk});
+  save();const nm=C.name;stopExercise();openPl('Bravo '+nm+' ! Circuit terminé 👏');
+}
+$('openPl').onclick=()=>openPl();
+$('plBack').onclick=()=>show('pl',0);
+$('plGo').onclick=()=>{
+  const name=$('plName').value.trim();if(!name){$('plName').focus();return;}
+  const key=name.toLowerCase(),h=(PL[key]&&PL[key].h)||[],last=h[h.length-1];
+  C={name,key,i:0,prev:mode,pi:intervalMs,pd:duration,span:last?Math.max(3,Math.min(6,last.best||3)):3,iv:last?(last.note>=7?1000:last.note>=4?1500:2000):1500,best:0,btOk:0,mathOk:0,trials:[{t:'bt'},{t:'bt'},{t:'bt'},{t:'bt'},{t:'m',op:'sum'},{t:'m',op:'alt'}]};
+  show('pl',0);circuitRun();
+};
+$('openCoach').onclick=()=>{$('pin').value='';$('pinMsg').textContent=PIN?'Entrez votre code':'Créez un code à 4 chiffres';show('pinBox',1);show('coachList',0);show('coach',1);};
+$('pinOk').onclick=()=>{
+  const v=$('pin').value;if(!/^\d{4}$/.test(v)){$('pinMsg').textContent='4 chiffres requis';return;}
+  if(!PIN){PIN=v;try{localStorage.setItem('bt_pin',v)}catch(e){}}
+  else if(v!==PIN){$('pinMsg').textContent='Code incorrect';return;}
+  show('pinBox',0);renderCoach();show('coachList',1);
+};
+function renderCoach(){
+  const rows=Object.values(PL).map(p=>({p,l:p.h[p.h.length-1]})).sort((a,b)=>b.l.note-a.l.note);
+  $('coachRows').innerHTML=rows.length?rows.map(({p,l})=>`<div class="row"><b>${esc(p.name)}</b><span>${l.note}/10</span><small>${l.d} · Backtrack max ${l.best||0}, ${l.bt}/4 · Math ${l.m}/2 · ${p.h.length} séance(s)</small></div>`).join(''):'<p>Aucun joueur pour le moment.</p>';
+}
+$('coachWipe').onclick=()=>{if(!wipe){wipe=1;$('coachWipe').textContent='Appuyez encore pour confirmer';return;}PL={};save();wipe=0;$('coachWipe').textContent='Tout effacer';renderCoach();};
+$('coachClose').onclick=()=>{wipe=0;$('coachWipe').textContent='Tout effacer';show('coach',0);};
+/* Didacticiel avant la partie */
+const TUTO={
+ stroop:{t:'🎭 Stroop',demo:'<span style="color:#f43f5e">BLEU</span>',steps:['Un mot de couleur s\'affiche.','Dis à voix haute le MOT écrit, sans te laisser tromper par sa couleur.','Ici le mot BLEU est écrit en rouge : réponds « bleu ».'],tip:'Reste en mouvement (dribble, déplacements) pendant que tu réponds.'},
+ generator:{t:'🎨 Plots',demo:'<span style="color:#059669">VERT</span>',steps:['L\'écran change de couleur.','Cours toucher le plot de cette couleur.','Reviens au centre avant le signal suivant.'],tip:'Pose un plot par couleur active avant de commencer.'},
+ dualtask:{t:'🧠 Dual Task',demo:'<span style="background:#2563eb;color:#fff;padding:4px 14px;border-radius:10px">CROSS</span>',steps:['La couleur du fond indique le plot à rejoindre.','Le mot indique le geste à réaliser (Cross, BTB, BTL...).','Fais le geste, puis rejoins le bon plot.'],tip:'La qualité du geste d\'abord, la vitesse ensuite.'},
+ arrows:{t:'🧭 Flèches',demo:'<span style="color:#10b981">→ vert</span><span style="color:#f43f5e">→ rouge</span>',steps:['Flèche verte : va dans cette direction.','Flèche rouge (contre-ordre) : va dans la direction OPPOSÉE.','Reviens au centre après chaque signal.'],tip:'Ne pars pas avant d\'avoir vu la couleur de la flèche.'},
+ math:{t:'🧮 Math Memory',demo:'<span style="color:#fcd34d">7</span><span style="color:#60a5fa">3</span><span style="color:#34d399">5</span>',steps:['Des chiffres de 1 à 9 s\'affichent un par un.','Retiens-les ou calcule au fur et à mesure, sans t\'arrêter de bouger.','À la fin, tape le résultat (le bouton ± donne un nombre négatif).'],tip:'Les couleurs des chiffres ne comptent pas.'},
+ backtrack:{t:'↩️ Backtrack',demo:'<span>↑ ← ↓</span>',steps:['Des flèches s\'affichent une par une : mémorise l\'ordre.','Ensuite, saisis la séquence à l\'ENVERS, de la dernière à la première.','Ici : ↑ ← ↓ se répond ↓ ← ↑.'],tip:'Regarde bien la dernière flèche : c\'est par elle que tu commences.'},
+ duel:{t:'🏀 1 contre 1 + Tir',demo:'<span style="color:#10b981">← →</span><span style="color:#fb923c">TIR !</span>',steps:['Flèche gauche ou droite : pars de ce côté (attaquant) ou réagis (défenseur).','Écran orange TIR : ne bouge pas latéralement, prends le tir !','Un bip plus aigu annonce le tir.'],tip:'Le défenseur met la main haute pour contester le tir.'},
+ simon:{t:'🎯 Simon',demo:'<span style="color:#60a5fa">BLEU</span><span style="color:#34d399">VERT</span><span style="color:#f43f5e">ROUGE</span>',steps:['Des couleurs s\'affichent l\'une après l\'autre : mémorise l\'ordre.','Quand l\'écran dit « Touche les cônes ! », cours les toucher dans le même ordre, puis saisis la séquence sur le téléphone.','L\'appli vérifie ta réponse toute seule.','Réussi : une couleur de plus à la manche suivante. Raté : une de moins.'],tip:'Pose un plot par couleur active avant de commencer. La même couleur ne s\'affiche jamais deux fois de suite.'}
+};
+try{if(localStorage.getItem('bt_tuto')==='0')$('tutoOn').checked=false}catch(e){}
+$('tutoOn').addEventListener('change',e=>{try{localStorage.setItem('bt_tuto',e.target.checked?'1':'0')}catch(x){}});
+function openTuto(){
+  if(!$('tutoOn').checked){startExercise();return;}
+  const d=TUTO[mode];
+  $('tTitle').textContent=d.t;$('tDemo').innerHTML=d.demo;
+  const st=d.steps.slice();
+  if(mode==='math')st.push('Règle : '+$('mathOp').selectedOptions[0].text+'.');
+  if(mode==='backtrack')st.push('Séquence de '+$('btLen').value+' flèches.');
+  $('tSteps').innerHTML=st.map(s=>'<li>'+esc(s)+'</li>').join('');
+  $('tTip').textContent=d.tip+' Un signal toutes les '+(intervalMs/1000)+' s'+(mode==='backtrack'?'.':', pendant '+duration+' s.');
+  show('tuto',1);
+}
+$('tGo').onclick=()=>{show('tuto',0);startExercise();};
+$('tBack').onclick=()=>show('tuto',0);
+/* Mode Simon */
+function simonGo(){
+  S.phase='go';S.goLeft=S.sq.length*S.simonSec*1000;
+  resetView();$('label').classList.add('hidden');
+  $('goCd').textContent=Math.ceil(S.goLeft/1000)+'s';
+  show('simonGo',1);beep(660,.25);
+}
+$('goDone').onclick=()=>{if(S.phase==='go')promptSimon();};
+function promptSimon(){
+  S.phase='input';
+  resetView();$('label').classList.add('hidden');
+  S.round++;
+  $('simonInfo').textContent='Manche '+S.round+' · '+S.sq.length+' couleurs · record '+S.simonBest;
+  S.sin=[];simonRender();show('simonFb',0);
+  $('simonPad').innerHTML=S.colors.map(c=>`<button type="button" data-c="${c.n}" style="background:${c.h};color:${c.dark?'#0f172a':'#fff'};border:0;border-radius:12px;padding:16px 18px;font-size:14px;font-weight:800;min-width:96px;cursor:pointer">${c.n}</button>`).join('')+'<button type="button" data-clear="1" style="border:0;border-radius:12px;padding:16px 14px;background:#334155;color:#fb7185;font-size:18px;cursor:pointer">⟲</button>';
+  show('simonCard',1);
+}
+$('simonShow').onclick=()=>{
+  $('simonSeq').innerHTML=S.sq.map((n,i)=>{const c=COLORS.find(x=>x.n===n);return `<span style="background:${c.h};color:${c.dark?'#0f172a':'#fff'};padding:6px 10px;border-radius:8px;font-size:13px;font-weight:700">${i+1}. ${c.n}</span>`;}).join('');
+  show('simonSeq',1);show('simonShow',0);show('simonVerdict',1);
+};
+function simonNext(ok){
+  if(ok)S.simonBest=Math.max(S.simonBest,S.sq.length);
+  S.sqLen=ok?Math.min(8,S.sq.length+1):Math.max(2,S.sq.length-1);
+  S.sq=[];S.lastShown=false;S.lastInk=null;S.since=0;
+  resetView();S.phase='showing';cue();
+}
+function simonRender(){
+  $('simonSeq').innerHTML=S.sin.length?S.sin.map(n=>{const c=COLORS.find(x=>x.n===n);return `<span style="background:${c.h};color:${c.dark?'#0f172a':'#fff'};padding:6px 10px;border-radius:8px;font-size:13px;font-weight:700">${c.n}</span>`;}).join(''):'<span style="color:#64748b;font-size:13px">Aucune couleur saisie</span>';
+  show('simonSeq',1);
+}
+$('simonPad').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b||S.simonLock)return;
+  if(b.dataset.clear){S.sin=[];simonRender();return;}
+  if(S.sin.length<S.sq.length){
+    S.sin.push(b.dataset.c);simonRender();
+    beep(300+COLORS.findIndex(x=>x.n===b.dataset.c)*130,.12);
+    if(S.sin.length===S.sq.length)simonCheck();
+  }
+});
+function simonCheck(){
+  const ok=S.sin.every((n,i)=>n===S.sq[i]);
+  S.simonLock=true;
+  const fb=$('simonFb');fb.className=ok?'ok':'ko';
+  fb.innerHTML=ok?'✅ Bravo, séquence exacte !':'❌ Raté !<br>Attendu : '+S.sq.join(' ➔ ');
+  beep(ok?1000:200,.3);
+  setTimeout(()=>{S.simonLock=false;if(S.phase==='input')simonNext(ok);},2200);
+}
+$('simonOk').onclick=()=>simonNext(1);
+$('simonKo').onclick=()=>simonNext(0);
+/* Caméra (mode 1c1 + Tir) : nécessite une adresse https ou localhost */
+const CW=64,CH=48,ccv=document.createElement('canvas');ccv.width=CW;ccv.height=CH;
+const ccx=ccv.getContext('2d',{willReadFrequently:true});
+let cStream=null,cTimer=null,cPrev=null,cLast='';
+const CAM={on:false,exp:'',t0:0,got:'',dt:0,n:0,ok:0,sum:0,dn:0};
+async function camStart(keep){
+  CAM.on=false;
+  if(mode!=='approach'&&(!$('camOn').checked||mode!=='duel'))return;
+  try{
+    cStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:$('camFace').value,width:{ideal:640},height:{ideal:480}},audio:false});
+    const v=$('camV');v.srcObject=cStream;v.style.transform=$('camFace').value==='user'?'scaleX(-1)':'none';
+    await v.play();show('camV',1);show('camZ',1);
+    Object.assign(CAM,keep?{on:true,exp:'',got:''}:{on:true,exp:'',got:'',n:0,ok:0,sum:0,dn:0,cn:0,cok:0,xo:0});cPrev=null;cLast='';
+    cTimer=setInterval(camTick,100);
+  }catch(e){CAM.on=false;$('camRes').textContent='Caméra indisponible ('+((e&&e.name)||'erreur')+')';show('camRes',1);}
+}
+function camStop(){
+  clearInterval(cTimer);cTimer=null;
+  if(cStream)cStream.getTracks().forEach(t=>t.stop());
+  cStream=null;show('camV',0);show('camZ',0);show('camRes',0);CAM.on=false;
+}
+function camTick(){
+  const v=$('camV');if(v.readyState<2)return;
+  if(S.paused||S.phase!=='showing'){cPrev=null;return;}
+  ccx.save();if($('camFace').value==='user'){ccx.translate(CW,0);ccx.scale(-1,1);}
+  ccx.drawImage(v,0,0,CW,CH);ccx.restore();
+  const d=ccx.getImageData(0,0,CW,CH).data,g=new Uint8Array(CW*CH);
+  for(let i=0;i<CW*CH;i++)g[i]=(d[i*4]*3+d[i*4+1]*6+d[i*4+2])/10;
+  if(cPrev){
+    let l=0,c=0,r=0;const rows=new Uint16Array(CH),cols=new Uint16Array(CW);
+    for(let y=0;y<CH;y++)for(let x=0;x<CW;x++)if(Math.abs(g[y*CW+x]-cPrev[y*CW+x])>25){rows[y]++;cols[x]++;if(x<CW/3)l++;else if(x<CW*2/3)c++;else r++;}
+    const area=CW*CH/3;let pl=l/area*100,pc=c/area*100,pr=r/area*100;
+    if($('camFace').value==='environment'){const t=pl;pl=pr;pr=t;}
+    let side='';
+    const mx=Math.max(pl,pc,pr);if(mx>=6){side=mx===pc?'CENTRE':mx===pl?'GAUCHE':'DROITE';}
+    const zs=$('camZ').children;zs[0].style.background=side==='GAUCHE'?'#10b98166':'';zs[1].style.background=side==='CENTRE'?'#10b98166':'';zs[2].style.background=side==='DROITE'?'#10b98166':'';
+    if(mode!=='approach'&&side&&side!=='CENTRE'&&side===cLast&&CAM.exp&&!CAM.got&&performance.now()-CAM.t0>250){CAM.got=side;CAM.dt=(performance.now()-CAM.t0)/1000;}
+    cLast=side;if(mode==='approach')apDetect(rows,cols);
+  }
+  cPrev=g;
+}
+function camEval(){
+  if(!CAM.on||!CAM.exp)return;
+  const dir=CAM.exp!=='TIR';
+  const ok=dir?CAM.got===CAM.exp:CAM.got==='';
+  CAM.n++;if(ok)CAM.ok++;if(dir&&ok){CAM.sum+=CAM.dt;CAM.dn++;}
+  $('camRes').textContent=(ok?'✅ ':'❌ ')+(dir&&CAM.got?CAM.dt.toFixed(2).replace('.',',')+' s':dir?'pas de départ':'tir');
+  show('camRes',1);
+}
+function camSignal(exp){camEval();CAM.exp=exp;CAM.got='';CAM.t0=performance.now();}
+try{if(localStorage.getItem('bt_cam')==='1')$('camOn').checked=true;const f=localStorage.getItem('bt_camf');if(f)$('camFace').value=f;const m=localStorage.getItem('bt_mode');if(m&&DESC[m])setMode(m);}catch(e){}
+$('camOn').addEventListener('change',e=>{try{localStorage.setItem('bt_cam',e.target.checked?'1':'0')}catch(x){}});
+$('camFace').addEventListener('change',e=>{try{localStorage.setItem('bt_camf',e.target.value)}catch(x){}});
+/* Mode Approche caméra : le joueur dribble vers la caméra, l’appli décide de la flèche quand il est proche */
+function apWait(){
+  S.ap={st:'wait',n:0,until:0,cx:-1,vt:0,sc:0,last:'',dir:'',exit:false};
+  $('arrow').classList.add('hidden');$('label').classList.remove('hidden');
+  $('ex').style.backgroundColor='';
+  setLabel(CAM.on?'🏀 Dribble vers la caméra':'📷 Caméra indisponible','#fff','min(9vw,48px)');
+}
+function apTickOld(){
+  const a=S.ap;if(!a)return;
+  if(a.st==='sig'){if(CAM.got||performance.now()-CAM.t0>3500)apEnd();}
+  else if(a.st==='cool'&&performance.now()>=a.until)apWait();
+}
+function apDetectOld(rows){
+  if(!S.ap||S.ap.st!=='wait')return;
+  let tot=0;for(let y=0;y<CH;y++)tot+=rows[y];
+  let ext=0;
+  if(tot>=40){let cum=0,a=-1,b=-1;for(let y=0;y<CH;y++){cum+=rows[y];if(a<0&&cum>=tot*0.05)a=y;if(b<0&&cum>=tot*0.95)b=y;}ext=(b-a+1)/CH;}
+  $('camRes').textContent='Taille '+Math.round(ext*100)+' % / seuil '+Math.round(S.apThr*100)+' %';show('camRes',1);
+  S.ap.n=ext>=S.apThr?S.ap.n+1:0;
+  if(S.ap.n>=2)apSignal();
+}
+/* Détection par centroïde : arrivée au centre, direction, sortie du champ */
+function apDetect(rows,cols){
+  const a=S.ap;if(!a)return;
+  let tot=0;for(let y=0;y<CH;y++)tot+=rows[y];
+  let sw=0,sx=0;for(let x=0;x<CW;x++){const w=cols[x]*cols[x];sw+=w;sx+=w*x;}
+  const ok=tot>=45&&sw>0;
+  if(ok){let cx=sx/sw/CW;if($('camFace').value==='environment')cx=1-cx;a.cx=a.cx<0?cx:a.cx*0.5+cx*0.5;a.vt=0;}else a.vt++;
+  const now=performance.now();
+  if(a.st==='wait'){
+    let ext=0;
+    if(tot>=40){let cum=0,p=-1,q=-1;for(let y=0;y<CH;y++){cum+=rows[y];if(p<0&&cum>=tot*0.05)p=y;if(q<0&&cum>=tot*0.95)q=y;}ext=(q-p+1)/CH;}
+    const mid=a.cx>=0.25&&a.cx<=0.75;
+    $('camRes').textContent='Taille '+Math.round(ext*100)+' % / seuil '+Math.round(S.apThr*100)+' % · '+(mid?'centre ✔':'hors centre');show('camRes',1);
+    const g=a.pe>0?Math.min(0.15,Math.max(0,ext-a.pe)):0;const pred=S.apFast?ext+g*1.5:ext;a.pe=ext;a.n=(pred>=S.apThr&&mid)?a.n+1:0;
+    if(a.n>=(S.apFast?1:2))apSignal();
+  }else if(a.st==='sig'){
+    if(!a.dir&&ok&&now-CAM.t0>(S.apFast?150:250)){
+      const s=a.cx<0.3?'GAUCHE':a.cx>0.7?'DROITE':'';
+      a.sc=(s&&s===a.last)?a.sc+1:0;a.last=s;
+      if(s&&a.sc>=(S.apFast?0:1)){a.dir=s;a.tg=now;CAM.got=s;CAM.dt=(now-CAM.t0)/1000;}
+    }
+    if(a.dir&&!a.exit){
+      const out=a.dir==='GAUCHE'?a.cx<0.12:a.cx>0.88;
+      const gone=a.vt>=4&&(a.dir==='GAUCHE'?a.cx<0.35:a.cx>0.65);
+      if(out||gone)a.exit=true;
+    }
+  }
+}
+function apTick(){
+  const a=S.ap;if(!a)return;
+  const t=performance.now();
+  if(a.st==='sig'){if((a.dir&&(a.exit||t-a.tg>1200))||t-CAM.t0>3500)apEnd();}
+  else if(a.st==='cool'&&t>=a.until)apWait();
+}
+function apSignal(){
+  const d=Math.random()<0.5?'GAUCHE':'DROITE',ctr=Math.random()<S.apCtr;
+  S.ap.st='sig';S.ap.n=0;S.ap.ctr=ctr;S.ap.sc=0;S.ap.last='';S.ap.dir='';S.ap.exit=false;
+  CAM.exp=ctr?(d==='GAUCHE'?'DROITE':'GAUCHE'):d;CAM.got='';CAM.t0=performance.now();
+  const ar=$('arrow');$('label').classList.add('hidden');ar.classList.remove('hidden');
+  ar.classList.remove('pop');void ar.getBoundingClientRect();ar.classList.add('pop');
+  ar.style.setProperty('--r',ROT[d]+'deg');ar.style.color='#10b981';
+  ar.style.color=ctr?'#f43f5e':'#10b981';beep(ctr?440:880,ctr?.25:.15);buzz();
+}
+function apEnd(){
+  const ok=CAM.got===CAM.exp;
+  CAM.n++;if(ok){CAM.ok++;CAM.sum+=CAM.dt;CAM.dn++;}if(S.ap.ctr){CAM.cn=(CAM.cn||0)+1;if(ok)CAM.cok=(CAM.cok||0)+1;}
+  $('camRes').textContent=(ok?'✅ ':'❌ ')+(CAM.got?CAM.dt.toFixed(2).replace('.',',')+' s':'pas de départ');
+  if(ok&&S.ap.exit)CAM.xo=(CAM.xo||0)+1;$('camRes').textContent+=ok?(S.ap.exit?' · sortie ✔':' · sortie non confirmée'):'';CAM.exp='';
+  S.ap.st='cool';S.ap.until=performance.now()+3000;
+  $('arrow').classList.add('hidden');$('label').classList.remove('hidden');
+  setLabel(ok?'✅':'❌',ok?'#34d399':'#fb7185','110px');
+}
+TUTO.approach={t:'📷 Approche caméra',demo:'<span>🏃 → 📷</span>',steps:['Pose le téléphone au bout de la zone, face au joueur.','Dribble vers la caméra. Quand tu es proche, multiplie les petits appuis.','Flèche verte : pars de ce côté. Flèche rouge (contre-ordre) : pars du côté OPPOSÉ.','La caméra vérifie ta direction et mesure ton temps de réaction.'],tip:'Le chiffre « Taille » en bas à gauche aide à régler la distance de déclenchement.'};
+$('apFace').value=$('camFace').value;
+$('apFace').addEventListener('change',e=>{$('camFace').value=e.target.value;try{localStorage.setItem('bt_camf',e.target.value)}catch(x){}});
+$('camFace').addEventListener('change',e=>{$('apFace').value=e.target.value;});
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){
+    camStop();
+    if(S.phase==='showing'||S.phase==='ready'||S.phase==='go'){S.paused=true;$('pauseOv').classList.remove('hidden');}
+  }else if(S.phase!=='idle'&&mode==='duel'&&$('camOn').checked&&!CAM.on)camStart(1);
+});
+$('camOk').onclick=()=>show('camSum',0);
+$('start').addEventListener('click',openTuto);
+$('stopBtn').addEventListener('click',stopExercise);
+$('pauseBtn').addEventListener('click',togglePause);
+$('restartBtn').addEventListener('click',()=>{if(!C)startExercise();});
+$('pauseOv').addEventListener('click',togglePause);
+$('btRestart').addEventListener('click',stopExercise);
+$('mathRestart').addEventListener('click',stopExercise);
+</script>
+</body>
+</html>
